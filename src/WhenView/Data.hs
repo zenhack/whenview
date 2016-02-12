@@ -1,4 +1,8 @@
-module WhenView.Data (Timestamp(..)) where
+module WhenView.Data
+    ( Entry(..)
+    , Timestamp(..)
+    , Token(..)
+    ) where
 
 import Data.Hourglass (Date, TimeOfDay)
 import qualified Data.Hourglass as H
@@ -7,6 +11,12 @@ data Timestamp = Timestamp { date      :: Date
                            , timeOfDay :: Maybe TimeOfDay
                            } deriving(Show)
 
-data Day = Day Int [(Maybe TimeOfDay, String)] deriving(Show)
-data Week = Week [Day] deriving(Show)
-data Month = Month H.Month [Day] [Day] [Day] deriving(Show)
+data Entry = Entry { timestamp   :: Timestamp
+                   , description :: String
+                   } deriving(Show)
+
+data Token = TMonth H.Month
+           | TWeek
+           | TDay H.WeekDay
+           | TItem (Maybe TimeOfDay) String
+           deriving(Show)

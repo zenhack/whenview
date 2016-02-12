@@ -1,8 +1,8 @@
-module WhenView.Parser (Timestamp(..), entries) where
+module WhenView.Stage1.Parser (entries) where
 
 import Text.ParserCombinators.Parsec hiding (token)
 import Data.Hourglass
-import WhenView.Data (Timestamp(..))
+import WhenView.Data (Timestamp(..), Entry(..))
 import Control.Monad (unless)
 
 -- TODO: These are (german) internationalized names.
@@ -60,14 +60,14 @@ pDate = Date <$> pYear <*> pMonth <*> pDay
 pTimestamp :: Parser Timestamp
 pTimestamp = Timestamp <$> pDate <*> optionMaybe pTimeOfDay
 
-entry :: Parser (Timestamp, String)
+entry :: Parser Entry
 entry = do
     token $ many1 letter
     when <- pTimestamp
     what <- many1 entrySafe
-    return (when, what)
+    return $ Entry when what
   where
     entrySafe = (noneOf "\n") <|> (try (string "\n ") *> entrySafe)
 
-entries :: Parser [(Timestamp, String)]
+entries :: Parser [Entry]
 entries = entry `sepEndBy` (char '\n')
