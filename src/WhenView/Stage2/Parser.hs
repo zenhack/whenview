@@ -5,7 +5,9 @@ module WhenView.Stage2.Parser
 import Text.ParserCombinators.Parsec
 import WhenView.Data
 
-data TokenType = MonthT | WeekT | DayT | ItemT deriving(Eq)
+import Control.Monad (void)
+
+data TokenType = MonthT | WeekT | DayT | ItemT deriving(Show, Eq)
 
 typeOfToken :: Token -> TokenType
 typeOfToken t = case t of
@@ -14,29 +16,25 @@ typeOfToken t = case t of
     (TDay _) -> DayT
     (TItem _ _) -> ItemT
 
-pSatisfy p = do
+pToken ty = do
     tok <- anyToken
-    if p tok then
+    if typeOfToken tok == ty then
         return tok
     else
-        pzero -- TODO: Error message
-
-pItemT  = pTokenType ItemT  <?> "Expected ItemT"
-pDayT   = pTokenType DayT   <?> "Expected DayT"
-pWeekT  = pTokenType WeekT  <?> "Exepcted WeekT"
-pMonthT = pTokenType MonthT <?> "Expected MonthT"
-
-pTokenType ty = pSatisfy (\t -> typeOfToken t == ty)
+        pzero <?> show ty
 
 pDay = do
-    (TDay d)  <- pDayT
-    items <- many pItemT
+    (TDay d)  <- pToken DayT
+    items <- many (pToken ItemT)
     return $ Day d [(when, what) | TItem when what <- items]
 pWeek = do
-    pTokenType WeekT
+    pToken WeekT
     Week <$> many pDay
 pMonth = do
-    (TMonth m) <- pMonthT
+    (TMonth m) <- pToken MonthT
     Month m <$> (many pWeek)
 
-months = many pMonth
+-- The rest of this isn't working yet, so we're substituting a noop.
+months :: GenParser Token () [Token]
+months = many anyToken
+-- months = many pMonth
