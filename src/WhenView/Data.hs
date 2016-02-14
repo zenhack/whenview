@@ -2,6 +2,7 @@ module WhenView.Data
     ( Entry(..)
     , Timestamp(..)
     , Token(..)
+    , Year(..)
     , Month(..)
     , Week(..)
     , Day(..)
@@ -18,12 +19,14 @@ data Entry = Entry { timestamp   :: Timestamp
                    , description :: String
                    } deriving(Show)
 
-data Token = TMonth H.Month
+data Token = TYear Int
+           | TMonth H.Month
            | TWeek
            | TDay H.WeekDay
            | TItem (Maybe TimeOfDay) String
            deriving(Show)
 
+data Year = Year Int [Month]
 data Month = Month H.Month [Week] deriving(Show)
 data Week = Week [Day] deriving(Show)
 data Day = Day H.WeekDay [(Maybe TimeOfDay, String)] deriving(Show)

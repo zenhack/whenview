@@ -7,10 +7,11 @@ import WhenView.Data
 
 import Control.Monad (void)
 
-data TokenType = MonthT | WeekT | DayT | ItemT deriving(Show, Eq)
+data TokenType = YearT | MonthT | WeekT | DayT | ItemT deriving(Show, Eq)
 
 typeOfToken :: Token -> TokenType
 typeOfToken t = case t of
+    (TYear _) -> YearT
     (TMonth _) -> MonthT
     TWeek -> WeekT
     (TDay _) -> DayT
@@ -33,5 +34,8 @@ pWeek = do
 pMonth = do
     (TMonth m) <- pToken MonthT
     Month m <$> (many pWeek)
+pYear = do
+    (TYear y) <- pToken YearT
+    Year y <$> many pMonth
 
 months = many pMonth
