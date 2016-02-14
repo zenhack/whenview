@@ -16,7 +16,7 @@ typeOfToken t = case t of
     (TDay _) -> DayT
     (TItem _ _) -> ItemT
 
-pToken ty = do
+pToken ty = try $ do
     tok <- anyToken
     if typeOfToken tok == ty then
         return tok
@@ -34,7 +34,4 @@ pMonth = do
     (TMonth m) <- pToken MonthT
     Month m <$> (many pWeek)
 
--- The rest of this isn't working yet, so we're substituting a noop.
-months :: GenParser Token () [Token]
-months = many anyToken
--- months = many pMonth
+months = many pMonth
