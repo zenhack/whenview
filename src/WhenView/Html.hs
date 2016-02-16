@@ -11,3 +11,18 @@ fromDay (Day _ items) = H.td $ do
 
 fromWeek :: Week -> H.Html
 fromWeek (Week days) = H.tr $ mapM_ fromDay days
+
+fromMonth :: Month -> H.Html
+fromMonth (Month mon weeks) = do
+    H.h2 $ H.toHtml (show mon)
+    H.table $ mapM_ fromWeek weeks
+
+fromYear :: Year -> H.Html
+fromYear (Year year months) = do
+    H.h1 $ H.toHtml (show year)
+    mapM_ fromMonth months
+
+calendarPage :: [Year] -> H.Html
+calendarPage years = H.docTypeHtml $ H.html $ do
+    H.head $ H.title (H.toHtml "When calendar")
+    H.body $ mapM_ fromYear years
