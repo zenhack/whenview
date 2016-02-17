@@ -67,7 +67,7 @@ entry = do
     what <- many1 entrySafe
     return $ Entry when what
   where
-    entrySafe = (noneOf "\n") <|> (try (string "\n ") *> entrySafe)
+    entrySafe = noneOf "\n" <|> (try (string "\n ") *> entrySafe)
 
 entries :: Parser [Entry]
-entries = entry `sepEndBy` (char '\n')
+entries = entry `sepEndBy` char '\n'

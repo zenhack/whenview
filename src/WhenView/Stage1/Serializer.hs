@@ -10,11 +10,11 @@ calTokens (e:es) = let d = (date $ timestamp e) in
         calTokens' (getWeekStart (date $ timestamp e)) (e:es)
 
 calTokens' _ [] = []
-calTokens' cur (e:es) = let t = (timestamp e) in
-        if (date t) == cur then
+calTokens' cur (e:es) = let t = timestamp e in
+        if date t == cur then
             TItem (timeOfDay t) (description e):(calTokens' cur es)
         else let
-            next     = cur `H.dateAddPeriod` (H.Period 0 0 1)
+            next     = cur `H.dateAddPeriod` H.Period 0 0 1
             yearCur  = H.dateYear cur
             yearNext = H.dateYear next
             monCur   = H.dateMonth cur

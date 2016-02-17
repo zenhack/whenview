@@ -33,7 +33,7 @@ pWeek = do
     Week <$> many pDay
 pMonth = do
     (TMonth m) <- pToken MonthT
-    Month m <$> (many pWeek)
+    Month m <$> many pWeek
 pYear = do
     (TYear y) <- pToken YearT
     Year y <$> many pMonth

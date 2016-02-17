@@ -5,7 +5,7 @@ import qualified Text.Blaze.Html5 as H
 import WhenView.Data
 
 fromDay :: Day -> H.Html
-fromDay (Day _ items) = H.td $ do
+fromDay (Day _ items) = H.td $
     H.ul $ forM_ items (\item ->
         H.li (H.toHtml $ show item))
 
