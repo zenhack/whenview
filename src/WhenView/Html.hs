@@ -1,7 +1,8 @@
 module WhenView.Html where
 
 import Control.Monad (forM_, mapM_)
-import Data.Map.Strict as M
+import qualified Data.Map.Strict as M
+import Data.Maybe (fromMaybe)
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Hourglass as Hourglass
 import Data.Hourglass(WeekDay(..), TimeOfDay(..), Hours(..), Minutes(..))
@@ -18,12 +19,17 @@ fromItem :: (Maybe TimeOfDay, String) -> H.Html
 fromItem (Nothing, s) = H.toHtml s
 fromItem (Just t, s) = H.toHtml (formatTimeOfDay t ++ ": " ++ s)
 
-fromDay :: Day -> H.Html
-fromDay (Day _ items) = H.td $
+fromItems :: [(Maybe TimeOfDay, String)] -> H.Html
+fromItems items = H.td $
     H.ul $ forM_ items (\item -> H.li $ fromItem item)
 
 fromWeek :: Week -> H.Html
-fromWeek (Week days) = H.tr $ mapM_ fromDay days
+fromWeek (Week days) = H.tr $
+    let
+        days'  = [M.lookup day days | day <- [Sunday .. Saturday]]
+        days'' = map (maybe [] (\(Day _ items) -> items)) days'
+    in
+        mapM_ fromItems days''
 
 fromMonth :: Hourglass.Month -> Month -> H.Html
 fromMonth mon (Month weeks) = do
