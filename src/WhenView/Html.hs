@@ -19,17 +19,16 @@ fromItem :: (Maybe TimeOfDay, String) -> H.Html
 fromItem (Nothing, s) = H.toHtml s
 fromItem (Just t, s) = H.toHtml (formatTimeOfDay t ++ ": " ++ s)
 
-fromItems :: [(Maybe TimeOfDay, String)] -> H.Html
-fromItems items = H.td $
+fromMaybeDay :: Maybe Day -> H.Html
+fromMaybeDay Nothing = H.td $ H.toHtml ""
+fromMaybeDay (Just (Day date items)) = H.td $ do
+    H.p $ H.toHtml $ show (Hourglass.dateDay date)
     H.ul $ forM_ items (\item -> H.li $ fromItem item)
 
 fromWeek :: Week -> H.Html
 fromWeek (Week days) = H.tr $
-    let
-        days'  = [M.lookup day days | day <- [Sunday .. Saturday]]
-        days'' = map (maybe [] (\(Day _ items) -> items)) days'
-    in
-        mapM_ fromItems days''
+    let days' = [M.lookup day days | day <- [Sunday .. Saturday]]
+    in mapM_ fromMaybeDay days'
 
 fromMonth :: Hourglass.Month -> Month -> H.Html
 fromMonth mon (Month weeks) = do
