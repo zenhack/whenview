@@ -4,6 +4,7 @@ import Control.Monad (forM_, mapM_)
 import Data.Map.Strict as M
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Hourglass as Hourglass
+import Data.Hourglass(WeekDay(..))
 import WhenView.Data
 
 fromDay :: Day -> H.Html
@@ -17,7 +18,10 @@ fromWeek (Week days) = H.tr $ mapM_ fromDay days
 fromMonth :: Hourglass.Month -> Month -> H.Html
 fromMonth mon (Month weeks) = do
     H.h2 $ H.toHtml (show mon)
-    H.table $ mapM_ fromWeek weeks
+    H.table $ do
+        H.tr $ forM_ [Sunday .. Saturday] (\day ->
+            H.th $ H.toHtml (show day))
+        mapM_ fromWeek weeks
 
 fromYear :: Year -> H.Html
 fromYear (Year year months) = do
