@@ -19,13 +19,12 @@ calTokens' cur (e:es) = let t = timestamp e in
             yearNext = H.dateYear next
             monCur   = H.dateMonth cur
             monNext  = H.dateMonth next
-            weekCur  = H.getWeekDay cur
             weekNext = H.getWeekDay next
             yearEvent = if yearCur /= yearNext then [TYear yearNext] else []
             monEvent  = if monCur /= monNext then [TMonth monNext] else []
             weekEvent = if weekNext == H.Sunday || monEvent /= [] then [TWeek] else []
         in
-            yearEvent ++ monEvent ++ weekEvent ++ [TDay weekNext] ++ calTokens' next (e:es)
+            yearEvent ++ monEvent ++ weekEvent ++ [TDay (date t)] ++ calTokens' next (e:es)
 
 -- assumption: (fromEnum Sunday == 0). TODO verify.
 getWeekStart :: Date -> Date

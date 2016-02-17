@@ -1,7 +1,9 @@
 module WhenView.Html where
 
 import Control.Monad (forM_, mapM_)
+import Data.Map.Strict as M
 import qualified Text.Blaze.Html5 as H
+import qualified Data.Hourglass as Hourglass
 import WhenView.Data
 
 fromDay :: Day -> H.Html
@@ -12,15 +14,15 @@ fromDay (Day _ items) = H.td $
 fromWeek :: Week -> H.Html
 fromWeek (Week days) = H.tr $ mapM_ fromDay days
 
-fromMonth :: Month -> H.Html
-fromMonth (Month mon weeks) = do
+fromMonth :: Hourglass.Month -> Month -> H.Html
+fromMonth mon (Month weeks) = do
     H.h2 $ H.toHtml (show mon)
     H.table $ mapM_ fromWeek weeks
 
 fromYear :: Year -> H.Html
 fromYear (Year year months) = do
     H.h1 $ H.toHtml (show year)
-    mapM_ fromMonth months
+    mapM_ (uncurry fromMonth) (M.toList months)
 
 calendarPage :: [Year] -> H.Html
 calendarPage years = H.docTypeHtml $ H.html $ do

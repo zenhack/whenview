@@ -3,8 +3,10 @@ module WhenView.Stage2.Parser
     ) where
 
 import Text.ParserCombinators.Parsec
+import Data.Hourglass as H
 import WhenView.Data
 
+import qualified Data.Map.Strict as M
 import Control.Monad (void)
 
 data TokenType = YearT | MonthT | WeekT | DayT | ItemT deriving(Show, Eq)
@@ -30,12 +32,15 @@ pDay = do
     return $ Day d [(when, what) | TItem when what <- items]
 pWeek = do
     pToken WeekT
-    Week <$> many pDay
+    days <- many pDay
+    return $ Week $ M.fromList [(H.getWeekDay date, day)
+                                | day@(Day date _) <- days]
 pMonth = do
     (TMonth m) <- pToken MonthT
-    Month m <$> many pWeek
+    weeks <- many pWeek
+    return (m, Month weeks)
 pYear = do
     (TYear y) <- pToken YearT
-    Year y <$> many pMonth
+    (Year y . M.fromList) <$> many pMonth
 
 years = many pYear
