@@ -4,27 +4,41 @@ import WhenView.Data
 import Data.Hourglass (Date, TimeOfDay)
 import qualified Data.Hourglass as H
 
+oneDay = H.Period 0 0 1
+
+allDaysFrom day = day:(allDaysFrom $ day `H.dateAddPeriod` oneDay)
+
 calTokens :: [Entry] -> [Token]
-calTokens (e:es) = let d = (date $ timestamp e) in
-    [TYear (H.dateYear d), TMonth (H.dateMonth d), TWeek] ++
-        calTokens' (getWeekStart (date $ timestamp e)) (e:es)
+calTokens (e:es) = let
+        d = (date $ timestamp e)
+        weekStart = getWeekStart d
+    in
+    [ TYear (H.dateYear weekStart)
+    , TMonth (H.dateMonth weekStart)
+    , TWeek
+    , TDay weekStart
+    ] ++ calTokens' (allDaysFrom weekStart) (e:es)
 
 calTokens' _ [] = []
-calTokens' cur (e:es) = let t = timestamp e in
-        if date t == cur then
-            TItem (timeOfDay t) (description e):(calTokens' cur es)
-        else let
-            next     = cur `H.dateAddPeriod` H.Period 0 0 1
-            yearCur  = H.dateYear cur
-            yearNext = H.dateYear next
-            monCur   = H.dateMonth cur
-            monNext  = H.dateMonth next
-            weekNext = H.getWeekDay next
-            yearEvent = if yearCur /= yearNext then [TYear yearNext] else []
-            monEvent  = if monCur /= monNext then [TMonth monNext] else []
-            weekEvent = if weekNext == H.Sunday || monEvent /= [] then [TWeek] else []
-        in
-            yearEvent ++ monEvent ++ weekEvent ++ [TDay (date t)] ++ calTokens' next (e:es)
+calTokens' (d:ds) (e:es) = let t = (date $ timestamp e) in
+    if t == d then
+        TItem (timeOfDay $ timestamp e) (description e):(calTokens' (d:ds) es)
+    else
+        datePrefix d ++ (calTokens' ds (e:es))
+  where
+    datePrefix d = let d' = d `H.dateAddPeriod` oneDay in
+        (singleIf
+            (TYear (H.dateYear d'))
+            (H.dateMonth d' == H.January && H.dateDay d' == 1)) ++
+        (singleIf
+            (TMonth (H.dateMonth $ d' `H.dateAddPeriod` oneDay))
+            (H.dateDay d' == 1)) ++
+        (singleIf
+            TWeek
+            (H.getWeekDay d' == H.Sunday || H.dateDay d' == 1)) ++
+        [TDay d']
+    singleIf token condition = if condition then [token] else []
+
 
 -- assumption: (fromEnum Sunday == 0). TODO verify.
 getWeekStart :: Date -> Date
