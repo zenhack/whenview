@@ -1,5 +1,5 @@
 module WhenView.Stage2.Parser
-    ( months
+    ( years
     ) where
 
 import Text.ParserCombinators.Parsec
@@ -38,4 +38,4 @@ pYear = do
     (TYear y) <- pToken YearT
     Year y <$> many pMonth
 
-months = many pMonth
+years = many pYear

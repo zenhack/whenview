@@ -24,9 +24,9 @@ data Token = TYear Int
            | TWeek
            | TDay H.WeekDay
            | TItem (Maybe TimeOfDay) String
-           deriving(Show)
+           deriving(Eq, Show)
 
-data Year = Year Int [Month]
+data Year = Year Int [Month] deriving(Show)
 data Month = Month H.Month [Week] deriving(Show)
 data Week = Week [Day] deriving(Show)
 data Day = Day H.WeekDay [(Maybe TimeOfDay, String)] deriving(Show)
