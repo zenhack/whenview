@@ -4,32 +4,14 @@ import Text.ParserCombinators.Parsec hiding (token)
 import Data.Hourglass
 import WhenView.Data (Timestamp(..), Entry(..))
 import Control.Monad (unless)
-
--- TODO: These are (german) internationalized names.
--- We probably want to standardize on the POSIX/C locale
--- or something.
-months :: [(String, Month)]
-months = [ "Jan"
-         , "Feb"
-         , "Mar"
-         , "Apr"
-         , "Mai"
-         , "Jun"
-         , "Jul"
-         , "Aug"
-         , "Sep"
-         , "Okt"
-         , "Nov"
-         , "Dez"
-         ] `zip` [January .. December]
-
+import WhenView.I18n (Months)
 
 
 pYear :: Parser Int
 pYear = token $ read <$> count 4 digit
 
-pMonth :: Parser Month
-pMonth = token $ do
+pMonth :: Months -> Parser Month
+pMonth months = token $ do
     name <- choice [try $ string m | (m, _) <- months]
     let (Just ret) = lookup name months
     return ret
@@ -54,20 +36,20 @@ pTimeOfDay = token $ do
 token :: Parser a -> Parser a
 token p = p <* spaces
 
-pDate :: Parser Date
-pDate = Date <$> pYear <*> pMonth <*> pDay
+pDate :: Months -> Parser Date
+pDate months = Date <$> pYear <*> pMonth months <*> pDay
 
-pTimestamp :: Parser Timestamp
-pTimestamp = Timestamp <$> pDate <*> optionMaybe pTimeOfDay
+pTimestamp :: Months -> Parser Timestamp
+pTimestamp months = Timestamp <$> pDate months <*> optionMaybe pTimeOfDay
 
-entry :: Parser Entry
-entry = do
+entry :: Months -> Parser Entry
+entry months = do
     token $ many1 letter
-    when <- pTimestamp
+    when <- pTimestamp months
     what <- many1 entrySafe
     return $ Entry when what
   where
     entrySafe = noneOf "\n" <|> (try (string "\n ") *> entrySafe)
 
-entries :: Parser [Entry]
-entries = entry `sepEndBy` char '\n'
+entries :: Months -> Parser [Entry]
+entries months = entry months `sepEndBy` char '\n'
