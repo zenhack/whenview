@@ -1,8 +1,10 @@
+{-# LANGUAGE OverloadedStrings #-}
 module WhenView.Html where
 
 import Control.Monad (forM_, mapM_)
 import qualified Data.Map.Strict as M
 import Data.Maybe (fromMaybe)
+import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Hourglass as Hourglass
 import Data.Hourglass(WeekDay(..), TimeOfDay(..), Hours(..), Minutes(..))
@@ -20,8 +22,8 @@ fromItem (Nothing, s) = H.toHtml s
 fromItem (Just t, s) = H.toHtml (formatTimeOfDay t ++ ": " ++ s)
 
 fromMaybeDay :: Maybe Day -> H.Html
-fromMaybeDay Nothing = H.td $ H.toHtml ""
-fromMaybeDay (Just (Day date items)) = H.td $ do
+fromMaybeDay Nothing = H.td ""
+fromMaybeDay (Just (Day date items)) = H.td $ H.div $ do
     H.p $ H.toHtml $ show (Hourglass.dateDay date)
     H.ul $ forM_ items (\item -> H.li $ fromItem item)
 
@@ -44,6 +46,8 @@ fromYear (Year year months) = do
     mapM_ (uncurry fromMonth) (M.toList months)
 
 calendarPage :: [Year] -> H.Html
-calendarPage years = H.docTypeHtml $ H.html $ do
-    H.head $ H.title (H.toHtml "When calendar")
+calendarPage years = H.docTypeHtml $ do
+    H.head $ do
+        H.title "When calendar"
+        H.style "td { vertical-align: top; border: 1px solid; }"
     H.body $ mapM_ fromYear years
