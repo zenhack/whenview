@@ -26,6 +26,9 @@ executable whenview
                        hourglass,
                        blaze-html,
                        blaze-markup,
-                       time
+                       time,
+                       process,
+                       optparse-applicative,
+                       mtl
   hs-source-dirs:      src
   default-language:    Haskell2010
