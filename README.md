@@ -5,29 +5,29 @@ to use it to see an actually *calendar* though. WhenView parses the output of
 `when`, and transforms it into an html document, which can then be passed to a
 browser for rendering.
 
-By default, WhenView invokes `when` itself:
-
-    $ whenview > out.html
-    $ firefox out.html
-
+If invoked with no arguments, WhenView invokes `when` itself, and then
+passes the resulting html to the browser.
 
 If WhenViews's first and only argument is `--stdin`, the input will be
-read from stdin:
+read from standard input:
 
-    when --noheader | whenview > out.html
-    firefox out.html
+    when --noheader | whenview --stdin
 
 Note that the `--noheader` option is required.
 
-Lynx can render from stdin:
+By default, WhenView uses xdg-open to select the browser. This can be
+override with the `-b`/`--browser` option:
 
-    whenview | lynx -dump -stdin
+    whenview -b links
 
-...But unfortunately, lynx doesn't display the tables in a way that
-looks much like a calendar. If you want to use a command line browser,
-you can use Links:
+A file containing the html will be passed as the first argument to the
+browser.
 
-    whenview > out.html
-    links out.html
+If you want to send the html to standard output, you can do something
+like:
+
+    whenview -b cat
+
+Any additional arguments are passed through to when itself.
 
 [1]: http://www.lightandmatter.com/when/when.html
