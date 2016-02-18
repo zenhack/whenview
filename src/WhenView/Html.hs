@@ -8,14 +8,27 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Data.Hourglass as Hourglass
 import Data.Hourglass(WeekDay(..), TimeOfDay(..), Hours(..), Minutes(..))
+import Data.Time (formatTime,defaultTimeLocale)
+import qualified Data.Time as T
 import WhenView.Data
 
--- Display a time of day as a string like 18:04. XXX: there must be a way to do
--- this in the hourglass package, but I'm not finding it at the moment.
--- This is also sloppy as heck; it'll display 18:04 as 18:4 for example.
+-- | Convert from Hourglass's TimeOfDay to Data.Time's TimeOfDay. Should
+-- investigate further, but Hourglass doesn't seem to have a function for
+-- formatting these nicely, and Data.Time looks to be missing some of the
+-- other nice stuff we need.
+convertTimeOfDay :: TimeOfDay -> T.TimeOfDay
+convertTimeOfDay tod = T.TimeOfDay
+    (fromIntegral hour)
+    (fromIntegral min)
+    (fromIntegral sec)
+  where
+    (Hours hour)  = todHour tod
+    (Minutes min) = todMin tod
+    (Hourglass.Seconds sec) = todSec tod
+
+-- | Display the time of day as a string
 formatTimeOfDay :: TimeOfDay -> String
-formatTimeOfDay tod = let (Hours h, Minutes m) = (todHour tod, todMin tod) in
-    (show h) ++ ":" ++ (show m)
+formatTimeOfDay = formatTime defaultTimeLocale "%H:%M" . convertTimeOfDay
 
 fromItem :: (Maybe TimeOfDay, String) -> H.Html
 fromItem (Nothing, s) = H.toHtml s
