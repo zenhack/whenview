@@ -23,7 +23,7 @@ executable whenview
   build-depends:       base >=4.8 && <4.9,
                        containers,
                        parsec,
-                       hourglass,
+                       hourglass >= 0.2.10 && < 0.3,
                        blaze-html,
                        blaze-markup,
                        time,
