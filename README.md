@@ -30,4 +30,7 @@ like:
 
 Any additional arguments are passed through to when itself.
 
+If a stylesheet `~/.when/view.css` exists, it will be applied to the
+page.
+
 [1]: http://www.lightandmatter.com/when/when.html
