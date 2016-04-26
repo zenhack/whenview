@@ -16,7 +16,7 @@ read from standard input:
 Note that the `--noheader` option is required.
 
 By default, WhenView uses xdg-open to select the browser. This can be
-override with the `-b`/`--browser` option:
+overridden with the `-b`/`--browser` option:
 
     whenview -b links
 
