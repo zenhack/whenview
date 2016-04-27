@@ -2,8 +2,9 @@ import WhenView.CliArgs
 import WhenView.I18n (getMonthsFor)
 import WhenView.Process (process)
 import System.Process (readProcess, callProcess)
-import System.Environment (getEnv)
+import System.Environment (getEnv, lookupEnv)
 import System.IO (openTempFile, hPutStr, hClose)
+import Control.Monad (join)
 
 main = do
     homeDir <- getEnv "HOME"
@@ -15,9 +16,14 @@ main = do
             readProcess "when" ("--noheader":whenArgs argSpec) ""
     case process months input (homeDir ++ "/.when/view.css") of
         Right output -> do
-            (path, hdl) <- openTempFile "/tmp" ".html"
-            hPutStr hdl output
-            hClose hdl
+            user <- lookupEnv "USER"
+            display <- lookupEnv "DISPLAY"
+            let path = join [ "/tmp/whenview."
+                            , maybe "" id user
+                            , "."
+                            , maybe "" id display
+                            , ".html"
+                            ]
+            writeFile path output
             callProcess (browser argSpec) [path]
-            -- TODO: delete the file
         Left err -> print err
