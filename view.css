@@ -1,0 +1,15 @@
+
+/* Put some space between items in the cells; this improves readability. */
+li { margin-top: 1em; }
+
+/* ...but don't add unnecesscary space at the top. */
+li:first-child { margin: 0em; }
+
+ul {
+	/* Get rid of the bullet point markers; these take up a lot of space and
+	 * aren't very useful. */
+	list-style-type: none;
+
+	/* The default padding wastes a lot of space; make it a bit smaller. */
+	padding: 0.5em;
+}

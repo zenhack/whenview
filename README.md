@@ -5,6 +5,8 @@ to use it to see an actually *calendar* though. WhenView parses the output of
 `when`, and transforms it into an html document, which can then be passed to a
 browser for rendering.
 
+# Running
+
 If invoked with no arguments, WhenView invokes `when` itself, and then
 passes the resulting html to the browser.
 
@@ -30,7 +32,12 @@ like:
 
 Any additional arguments are passed through to when itself.
 
-If a stylesheet `~/.when/view.css` exists, it will be applied to the
-page.
+# Styling
+
+The output of `whenview` includes a style rule to draw borders around
+the days in the calendar; this is considered essential to the usability
+of the program. If a stylesheet `~/.when/view.css` exists, it will also
+be applied to the document. An example `view.css` is available at the
+root of the source tree; it contains some improvements.
 
 [1]: http://www.lightandmatter.com/when/when.html
