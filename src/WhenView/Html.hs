@@ -63,6 +63,7 @@ fromYear (Year year months) = do
 calendarPage :: String -> [Year] -> H.Html
 calendarPage style years = H.docTypeHtml $ do
     H.head $ do
+        H.meta ! A.charset "utf-8"
         H.title "When calendar"
         H.style "td { vertical-align: top; border: 1px solid; }"
         H.link ! A.rel "stylesheet" ! A.href (fromString style)
