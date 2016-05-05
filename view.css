@@ -13,3 +13,9 @@ ul {
 	/* The default padding wastes a lot of space; make it a bit smaller. */
 	padding: 0.5em;
 }
+
+td {
+	/* About 1/7th; this makes the cells for each day of the week evenly
+	 * spaced: */
+	width: 14.3%;
+}
