@@ -1,6 +1,7 @@
 module WhenView.CliArgs (Args(..), parseArgs) where
 
 import Options.Applicative hiding(Args)
+import Data.Monoid ((<>))
 
 data Args = Args { stdin    :: Bool
                  , browser  :: String
