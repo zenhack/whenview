@@ -9,9 +9,9 @@ import Text.ParserCombinators.Parsec (runParser, ParseError)
 import WhenView.Html (calendarPage)
 import Text.Blaze.Html.Renderer.Pretty (renderHtml)
 
-process :: Months -> String -> String -> Either ParseError String
-process months input style =
-    renderHtml . calendarPage style  <$> join
+process :: Months -> String -> Either ParseError String
+process months input =
+    renderHtml . calendarPage <$> join
         (runParser years () "tokens" <$>
          calTokens <$>
          runParser (entries months) () "stdin" input)

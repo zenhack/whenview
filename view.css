@@ -15,6 +15,7 @@ ul {
 }
 
 td {
+	vertical-align: top; border: 1px solid;
 	/* About 1/7th; this makes the cells for each day of the week evenly
 	 * spaced: */
 	width: 14.3%;

@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
 module WhenView.Html where
 
 import Control.Monad (forM_, mapM_)
@@ -6,6 +6,7 @@ import qualified Data.Map.Strict as M
 import Data.Maybe (fromMaybe)
 import Data.String (fromString)
 import Text.Blaze.Html5 ((!))
+import Text.Heredoc (there)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Data.Hourglass as Hourglass
@@ -60,11 +61,10 @@ fromYear (Year year months) = do
     H.h1 $ H.toHtml (show year)
     mapM_ (uncurry fromMonth) (M.toList months)
 
-calendarPage :: String -> [Year] -> H.Html
-calendarPage style years = H.docTypeHtml $ do
+calendarPage :: [Year] -> H.Html
+calendarPage years = H.docTypeHtml $ do
     H.head $ do
         H.meta ! A.charset "utf-8"
         H.title "When calendar"
-        H.style "td { vertical-align: top; border: 1px solid; }"
-        H.link ! A.rel "stylesheet" ! A.href (fromString style)
+        H.style $ fromString [there|view.css|]
     H.body $ mapM_ fromYear years

@@ -14,7 +14,7 @@ main = do
             getContents
         else
             readProcess "when" ("--noheader":whenArgs argSpec) ""
-    case process months input (homeDir ++ "/.when/view.css") of
+    case process months input of
         Right output -> do
             user <- lookupEnv "USER"
             display <- lookupEnv "DISPLAY"
