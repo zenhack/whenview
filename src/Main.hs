@@ -3,7 +3,6 @@ import WhenView.I18n (getMonthsFor)
 import WhenView.Process (process)
 import System.Process (readProcess, callProcess)
 import System.Environment (getEnv, lookupEnv)
-import System.IO (openTempFile, hPutStr, hClose)
 import Control.Monad (join)
 
 main = do
