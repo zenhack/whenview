@@ -2,11 +2,10 @@ import WhenView.CliArgs
 import WhenView.I18n (getMonthsFor)
 import WhenView.Process (process)
 import System.Process (readProcess, callProcess)
-import System.Environment (getEnv, lookupEnv)
+import System.Environment (lookupEnv)
 import Control.Monad (join)
 
 main = do
-    homeDir <- getEnv "HOME"
     argSpec  <- parseArgs
     months <- getMonthsFor
     input <- if stdin argSpec then

@@ -18,7 +18,15 @@ cabal-version:       >=1.10
 
 executable whenview
   main-is:             Main.hs
-  -- other-modules:
+  other-modules:
+    WhenView.CliArgs,
+    WhenView.Data,
+    WhenView.Html,
+    WhenView.I18n,
+    WhenView.Process,
+    WhenView.Stage1.Parser,
+    WhenView.Stage1.Serializer,
+    WhenView.Stage2.Parser
   -- other-extensions:
   build-depends:
     base >=4.8 && <5.0,

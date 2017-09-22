@@ -7,7 +7,6 @@ import Data.Hourglass as H
 import WhenView.Data
 
 import qualified Data.Map.Strict as M
-import Control.Monad (void)
 
 data TokenType = YearT | MonthT | WeekT | DayT | ItemT deriving(Show, Eq)
 
